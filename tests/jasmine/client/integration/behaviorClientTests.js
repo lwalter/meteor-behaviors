@@ -1,79 +1,8 @@
-describe('Behaviors', function () {
-  describe('applies the createdAt behavior', function () {
-    it('assigns a date on insert', function () {
-      var Tests = new Mongo.Collection(null);
-      Behaviors.createdAt(Tests, 'createdAt');
+describe('Behavior client tests', function () {
+  var testUser = 'TestUser';
 
-      var testId = Tests.insert({ text: 'Test text' });
-      var test = Tests.findOne({ _id: testId });
-      expect(test.createdAt).toBeDefined();
-    });
-  });
-
-  describe('applies the updatedAt behavior', function () {
-    it('assigns a date on update', function () {
-      var Tests = new Mongo.Collection(null);
-      Behaviors.updatedAt(Tests, 'updatedAt');
-
-      var testId = Tests.insert({ text: 'Test text' });
-      Tests.update(
-        { _id: testId },
-        {
-          $set: {
-            text: 'Updated text'
-          }
-        });
-
-      var test = Tests.findOne({ _id: testId });
-      expect(test.updatedAt).toBeDefined();
-    });
-  });
-
-  describe('applies the updateAtHistory behavior', function () {
-    it('assigns a date on update', function () {
-      var Tests = new Mongo.Collection(null);
-      Behaviors.updateAtHistory(Tests, 'updateAtHistory');
-
-      var testId = Tests.insert({ text: 'Test text' });
-
-      Tests.update(
-        { _id: testId },
-        {
-          $set: {
-            text: 'Updated text'
-          }
-        });
-
-      var test = Tests.findOne({ _id: testId });
-      expect(test.updateAtHistory).toBeDefined();
-      expect(test.updateAtHistory.length).toEqual(1);
-    });
-
-    it('appends a date on subsequent update', function () {
-      var Tests = new Mongo.Collection(null);
-      Behaviors.updateAtHistory(Tests, 'updateAtHistory');
-      var testId = Tests.insert({ text: 'Test text' });
-
-      Tests.update(
-        { _id: testId },
-        {
-          $set: {
-            text: 'Updated text'
-          }
-        });
-
-      Tests.update(
-        { _id: testId },
-        {
-          $set: {
-            text: 'Another update'
-          }
-        });
-
-      var test = Tests.findOne({ _id: testId });
-      expect(test.updateAtHistory).toBeDefined();
-      expect(test.updateAtHistory.length).toEqual(2);
-    });
+  beforeEach(function () {
+    spyOn(Meteor, 'userId').and.returnValue(testUser);
   });
 
   describe('applies the createdBy behavior', function () {
@@ -84,7 +13,7 @@ describe('Behaviors', function () {
       var testId = Tests.insert({ text: 'Test text' });
 
       var test = Tests.findOne({ _id: testId });
-      expect(test.createdBy).toBeDefined();
+      expect(test.createdBy).toEqual(testUser);
     });
   });
 
@@ -103,7 +32,7 @@ describe('Behaviors', function () {
         });
 
       var test = Tests.findOne({ _id: testId });
-      expect(test.updatedBy).toBeDefined();
+      expect(test.updatedBy).toEqual(testUser);
     });
   });
 
@@ -162,7 +91,7 @@ describe('Behaviors', function () {
       var testId = Tests.insert({ text: 'Test text' });
 
       var test = Tests.findOne({ _id: testId });
-      expect(test.createdBy).toBeDefined();
+      expect(test.createdBy).toEqual(testUser);
       expect(test.createdAt).toBeDefined();
     });
   });

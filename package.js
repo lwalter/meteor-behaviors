@@ -37,5 +37,6 @@ Package.onTest(function (api) {
   ];
 
   api.use(packages);
-  api.addFiles('test/behaviors.js', CLIENT_SERVER);
+  api.addFiles('tests/jasmine/client/integration/behaviorClientTests.js', 'client');
+  api.addFiles('tests/jasmine/behaviorTests.js', CLIENT_SERVER);
 });
